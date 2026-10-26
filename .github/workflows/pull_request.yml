@@ -1,0 +1,56 @@
+name: Safe to Deploy Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  safe-to-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        id: Checkout
+      - name: Install js-yaml
+        run: npm install js-yaml
+      - name: Extract snapshot Ids from vercode.yaml
+        id: image-values
+        run: |
+          node -e '
+            const fs = require("fs");
+            const yaml = require("js-yaml");
+            const fileContents = fs.readFileSync("veracode.yaml", "utf8");
+            const data = yaml.load(fileContents);
+            console.log(data);
+            const businessApp = data.businessApplication.uuid || data.businessApplication.name;
+            const businessVersion = data.businessApplication.version;
+
+            const stockroomFrontend = `${data.businessApplication.assets[0].name}@${data.businessApplication.assets[0].commitHash || data.businessApplication.assets[0].tag}`; ;
+          
+            const results = [stockroomFrontend];
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `results=${results.join(",")}\nbusinessApp=${businessApp}\nbusinessVersion=${businessVersion}`);
+          '
+
+
+
+
+      - uses: veracode/safe-to-deploy@v0.1.0
+        id: safe-to-deploy
+        with:
+          vid: ${{ secrets.VERACODE_API_ID }}
+          vkey: ${{ secrets.VERACODE_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          businessApp: ${{ steps.image-values.outputs.businessApp }}
+          artifacts_list: ${{ steps.image-values.outputs.results }}
+          businessVersion: ${{ steps.image-values.outputs.businessVersion }}
+          decision_mode: enforcement   # or: observer
+          repository_owner: ${{ github.repository_owner }}
+          repository_name: ${{ github.event.repository.name }}
+          source_branch: ${{ github.head_ref }}
+          pull_request: ${{ github.event.pull_request.number }}
