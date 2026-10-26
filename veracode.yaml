@@ -3,5 +3,5 @@ businessApplication:
   version: 1.0.0
   assets:
     - name: dennis-ta-test/verademo-deploy
-      commitHash: c85859ab61d6aa6ecbaedbf136e911258f06e058
+      commitHash: c63f760c212aa569e0fc1d1d7cea2cd55d09b54f
 
