@@ -1,5 +1,5 @@
 businessApplication:
-  name: verademo-deploy-git
+  name: dgu-ta-app1
   version: 1.0.1
   assets:
     - name: dennis-ta-test/verademo
