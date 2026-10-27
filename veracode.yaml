@@ -1,7 +1,7 @@
 businessApplication:
   name: verademo-deploy-git
-  version: 1.0.0
+  version: 1.0.1
   assets:
-    - name: dennis-ta-test/verademo-deploy
-      commitHash: c63f760c212aa569e0fc1d1d7cea2cd55d09b54f
+    - name: dennis-ta-test/verademo
+      commitHash: 3a636b9d4316c3c0c5204a31ac7c5e2df3b57466
 
