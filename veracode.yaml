@@ -1,0 +1,7 @@
+businessApplication:
+  name: dgu-ta-app1
+  version: 1.0.1
+  assets:
+    - name: dennis-ta-test/verademo
+      commitHash: 4fe68dac2d9a33dae176eba4684d9eaea9624f33
+
